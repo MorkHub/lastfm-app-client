@@ -12258,7 +12258,7 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"myApp\">\n  <ul id=\"example-1\">\n    <li v-for=\"item in storeinfo\" track-by=\"$index\">\n      {{ item }}\n    </li>\n  </ul>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"myApp\">\n  <ul id=\"example-1\">\n    <li v-for=\"item in storeinfo\" track-by=\"$index\">\n      <a href=\"/tesco?store_id={{item.string[0]}}\">{{item.string[1]}}</a>\n    </li>\n  </ul>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -12298,9 +12298,9 @@ var app = new _vue2.default({
 			this.$http.get('https://themork.co.uk/tesco/?json').then(function (response) {
 				var parsed = JSON.parse(response.body)["dict"];
 
-				parsed = parsed.map(function (x) {
-					return x.string[1];
-				});
+				// parsed = parsed.map(function(x){
+				//    return x.string[1];
+				// });
 
 				app.$data.storeinfo = parsed;
 			}, function (response) {

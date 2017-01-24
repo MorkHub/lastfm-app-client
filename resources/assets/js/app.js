@@ -16,9 +16,9 @@ var app = new Vue({
 		this.$http.get('https://themork.co.uk/tesco/?json').then((response) => {
 			let parsed = JSON.parse(response.body)["dict"];
 			
-			parsed = parsed.map(function(x){
-			   return x.string[1];
-			});
+			// parsed = parsed.map(function(x){
+			//    return x.string[1];
+			// });
 
 			app.$data.storeinfo = parsed;
 		}, (response) => {
