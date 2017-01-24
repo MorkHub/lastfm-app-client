@@ -1,12 +1,10 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 
-import vSelect from "vue-select";
-import SelectBox from './SelectBox.vue';
+import StoreList from './StoreList.vue';
 
 Vue.use(VueResource);
 
-Vue.component('v-select', vSelect);
 
 var app = new Vue({
   el: '#app',
@@ -31,5 +29,5 @@ var app = new Vue({
 	ready: function() {
     this.fetchStoreInfo();
 	},
-  components: { SelectBox }
+  components: { StoreList }
 });

@@ -1,15 +1,16 @@
 <template>
   <div id="myApp">
-    <v-select 
-      :options="storeinfo">
-    </v-select>
+    <ul id="example-1">
+      <li v-for="item in storeinfo" track-by="$index">
+        {{ item }}
+      </li>
+    </ul>
   </div>
 </template>
-<script>
-import vSelect from "vue-select"
-  export default {
-    components: { vSelect },
 
+<script>
+
+  export default {
     data() {
       return {}
     },
