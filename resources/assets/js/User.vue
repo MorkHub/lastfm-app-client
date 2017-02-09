@@ -1,17 +1,37 @@
 <template>
-    <input
-        type="text"
-        placeholder="Username"
-        v-model="user.name"
-    >
-    <button class="btn btn-primary" @click="submit()">Get Info</button>
-    <img :src="userData.user.image[2]['#text']" />
-    <h1>Username: <a target="_blank" :href="userData.user.url">{{userData.user.name}}</a></h1>
-    <h2>This user has played {{userData.user.playcount}} tracks!</h2>
-    <h2>They are currently listening to: {{user.nowPlaying.track_name}}</h2>
-    <h3>They last scrobbled: {{user.scrobbled.track_name}}</h3>
+  <div class="row">
+    <div class="panel panel-default" style="background: rgba(255,255,255,.7)">
+      <div class="panel-heading">User</div>
+      <div class="panel-body">
+        <div class="col-xs-12 form-inline">
+          <input id="getusername" type="text" class="form-control" placeholder="Username" v-model="user.name">
+          <button class="btn btn-primary" @click="submit()">Get Info</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <!--<h2>User Data: {{userData | json}}</h2>-->
+  <div class="row" v-if="userData.user.name !== ''">
+    <div class="col-xs-12">
+      <div class="well" style="background: rgba(255,255,255,.7)">
+  	    <img id="avatar" width="auto" height="100%" style="border-radius:50%; float:right; clear:both; max-height: 200px" :src="userData.user.image[2]['#text']">
+        <h1 id="user">Username: <a target="_blank" :href="userData.user.url">{{userData.user.name}}</a></h1>
+  	    <h2 id="played">This user has played {{userData.user.playcount}} tracks!
+          <span>That's {{ Math.floor(userData.user.playcount / ((Date.now() - 1000*parseInt(userData.user.registered.unixtime))/1000/3600)*10)/10 }} per hour.</span>
+        </h2>
+  	    <h2 id="nowplaying">They are currently listening to: {{user.nowPlaying.name}} by {{user.nowPlaying.artist['#text']}}</h2>
+  	    <h3 id="scrobbled" v-if="user.scrobbled.track_name != ''">They last scrobbled: {{user.scrobbled.track_name}}</h3>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row" v-if="userData.user.name !== ''">
+    <div class="well" style="background: rgba(255,255,255,.7)">
+      <pre><code>{{ userData | json }}</code></pre>
+      <prev v-if="window.location.hash.indexOf('debug') != -1"><code>{{ user.nowPlaying | json }}</code></pre>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -25,7 +45,7 @@
               },
               scrobbled: {
                 track_name: 'Nothing!'
-              }
+              },
             },
             userData: {}
         }
@@ -46,7 +66,39 @@
               this.source.close();
             }
 
-            this.source = new EventSource('http://192.168.1.180:3000/lastfm/user-update-stream?username=' + username);
+            this.source = new EventSource('http://barno.org:3000/lastfm/user-update-stream?username=' + username);
+            this.source.addEventListener('user.nowPlaying', (e) => {
+              let playingInfo = JSON.parse(e.data);
+              this.user.nowPlaying = JSON.parse(playingInfo.track);
+              document.body.style = "padding-top: 60px; background:url('"+this.user.nowPlaying.image[0]['#text']+"');background-attachment:fixed;background-size:cover;background-position";
+            }, false);
+
+            this.source.addEventListener('user.scrobbled', (e) => {
+              let playingInfo = JSON.parse(e.data);
+              this.user.scrobbled = playingInfo;
+            }, false);
+          } else {
+            // Result to xhr polling :(
+          }
+
+          this.$http.get('http://barno.org:3000/lastfm', {
+            params: {
+              'user': username,
+              'type': 'user.getInfo'
+            }
+          }).then(response => {
+
+            this.userData = response.body;
+
+          }, response => {
+            // error callback
+          });
+        }
+
+
+      }
+    }
+</script>
             this.source.addEventListener('user.nowPlaying', (e) => {
               let playingInfo = JSON.parse(e.data);
               this.user.nowPlaying = playingInfo;
