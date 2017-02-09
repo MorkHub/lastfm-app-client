@@ -1,4 +1,4 @@
-# tesco-vue
+# LastFM app [client]
 
 ## You need gulp.
 
