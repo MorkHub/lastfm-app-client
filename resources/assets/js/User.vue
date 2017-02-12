@@ -1,7 +1,13 @@
 <style>
   .well,
   .searchPanel {
-    background: rgba(255, 255, 255, .8);
+    background: rgba(255, 255, 255, .9);
+  }
+
+  .searchPanel input {
+    margin: 1em;
+    padding: 1em;
+    text-align: center;
   }
 
   #avatar {
@@ -15,33 +21,32 @@
 <template>
   <div class="row">
     <div class="panel panel-default searchPanel">
-      <div class="panel-heading">User</div>
       <div class="panel-body">
-        <div class="col-xs-12 form-inline">
+        <div class="col-sm-8 col-md-7 col-md-offset-2">
           <input
               id="getUsername"
               type="text"
               class="form-control"
               placeholder="Username"
               v-model="user.name"
-              @keyup.enter="submit">
+              @keyup.enter="submit"
+              debounce="500">
 
-          <button
-              class="btn btn-primary"
-              @click="submit">
-            Get Info
-          </button>
-
+          <scale-loader :loading="loading" :color="loadingColour" :height="height" :width="width"></scale-loader>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row" v-if="userLoaded">
+
+
+  <div class="row" v-if="getUser">
     <div class="col-xs-12">
 
       <div class="well">
-  	    <img id="avatar" width="auto" height="100%" style="" :src="userData.user.image[2]['#text']">
+
+        <img id="avatar" :src="userData.user.image[2]['#text']">
+
         <h1 id="user"><a target="_blank" :href="userData.user.url">{{userData.user.name}}</a></h1>
 
         <h2 id="played">This user has played {{ userData.user.playcount }} tracks!
@@ -60,21 +65,29 @@
     export default {
       data() {
         return {
-            user: {
-              name: '',
-              nowPlaying: {
-                track_name: 'Nothing!'
-              },
-              scrobbled: {
-                name: 'Nothing!'
-              },
+          user: {
+            name: '',
+            nowPlaying: {
+              track_name: 'Nothing!'
             },
-            userData: {}
+            scrobbled: {
+              name: 'Nothing!'
+            },
+          },
+          userData: {},
+          loading: false,
         }
       },
 
       ready() {
 
+      },
+
+      watch: {
+        'user.name'() {
+          this.loading = true;
+          this.submit();
+        }
       },
 
       computed: {
@@ -87,17 +100,26 @@
           return Math.floor(playCount / (delta));
         },
 
-        userLoaded() {
+        getUser() {
           let loaded = false;
 
           if(
               this.userData &&
               this.userData.user &&
               this.userData.user !== '') {
-            loaded = true;
+            loaded = this.userData.user;
           }
 
           return loaded;
+        },
+
+        userImage(size = 0) {
+          let user = this.getUser();
+
+          if(user) {
+
+          }
+
         }
       },
 
@@ -129,19 +151,24 @@
             }, false);
           }
 
-          this.$http.get('https://barno.org:3000/lastfm', {
+          this.getUserInfo(username).then(response => {
+            this.userData = response.body;
+            this.loading = false;
+          }, response => {
+            this.loading = false;
+          });
+
+        },
+
+        getUserInfo(username) {
+          return this.$http.get('https://barno.org:3000/lastfm', {
             params: {
               'user': username,
               'type': 'user.getInfo'
             }
-          }).then(response => {
-            this.userData = response.body;
-          }, response => {
-
           });
         }
+      },
 
-
-      }
     }
 </script>
