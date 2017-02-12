@@ -15,10 +15,7 @@
     "gulp": "^3.8.8",
     "laravel-elixir": "^4.0.0",
     "laravel-elixir-vueify": "^1.0.0",
-    "vue-resource": "^1.0.3"
-  },
-  "dependencies": {
-    "vue-spinner": "^1.0.2",
-    "vuex": "^2.1.2"
+    "vue-resource": "^1.0.3",
+    "vue-spinner": "^1.0.2"
   }
 }
