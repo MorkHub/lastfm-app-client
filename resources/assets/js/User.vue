@@ -1,11 +1,37 @@
+<style>
+  .well,
+  .searchPanel {
+    background: rgba(255, 255, 255, .8);
+  }
+
+  #avatar {
+    border-radius:50%;
+    float:right;
+    clear:both;
+    max-height: 150px;
+  }
+</style>
+
 <template>
   <div class="row">
-    <div class="panel panel-default" style="background: rgba(255,255,255,.7)">
+    <div class="panel panel-default searchPanel">
       <div class="panel-heading">User</div>
       <div class="panel-body">
         <div class="col-xs-12 form-inline">
-          <input id="getusername" type="text" class="form-control" placeholder="Username" v-model="user.name">
-          <button class="btn btn-primary" @click="submit()">Get Info</button>
+          <input
+              id="getUsername"
+              type="text"
+              class="form-control"
+              placeholder="Username"
+              v-model="user.name"
+              @keyup.enter="submit">
+
+          <button
+              class="btn btn-primary"
+              @click="submit">
+            Get Info
+          </button>
+
         </div>
       </div>
     </div>
@@ -14,8 +40,8 @@
   <div class="row" v-if="userLoaded">
     <div class="col-xs-12">
 
-      <div class="well" style="background: rgba(255,255,255,.7)">
-  	    <img id="avatar" width="auto" height="100%" style="border-radius:50%; float:right; clear:both; max-height: 150px" :src="userData.user.image[2]['#text']">
+      <div class="well">
+  	    <img id="avatar" width="auto" height="100%" style="" :src="userData.user.image[2]['#text']">
         <h1 id="user"><a target="_blank" :href="userData.user.url">{{userData.user.name}}</a></h1>
 
         <h2 id="played">This user has played {{ userData.user.playcount }} tracks!
