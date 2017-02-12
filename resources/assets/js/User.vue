@@ -16,6 +16,13 @@
     clear:both;
     max-height: 150px;
   }
+
+  body {
+    padding-top: 60px;
+    background-attachment:fixed;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+  }
 </style>
 
 <template>
@@ -30,7 +37,7 @@
               placeholder="Username"
               v-model="user.name"
               @keyup.enter="submit"
-              debounce="500">
+              debounce="750">
 
           <scale-loader :loading="loading" :color="loadingColour" :height="height" :width="width"></scale-loader>
         </div>
@@ -38,23 +45,26 @@
     </div>
   </div>
 
-
-
-  <div class="row" v-if="getUser">
+  <div class="row" v-if="UserData">
     <div class="col-xs-12">
 
       <div class="well">
 
-        <img id="avatar" :src="userData.user.image[2]['#text']">
+        <img id="avatar" :src="UserData.image[2]['#text']">
 
-        <h1 id="user"><a target="_blank" :href="userData.user.url">{{userData.user.name}}</a></h1>
+        <h1 id="user"><a target="_blank" :href="UserData.url">{{UserData.name}}</a></h1>
 
-        <h2 id="played">This user has played {{ userData.user.playcount }} tracks!
+        <h2 id="played">This user has played {{ UserData.playcount }} tracks!
           <span>That's {{ songsPerHour }} per hour.</span>
         </h2>
 
-  	    <h2 id="nowplaying">They are currently listening to: {{user.nowPlaying.name}} by {{user.nowPlaying.artist['#text']}}</h2>
-  	    <h3 id="scrobbled" v-if="user.scrobbled.name != 'Nothing!'">They last scrobbled: {{user.scrobbled.name}} by {{ user.scrobbled.artist['#text'] }}</h3>
+  	    <h2 id="nowplaying" v-if="NowPlaying">
+          They are currently listening to: {{NowPlaying.name}} by {{currentArtist}}
+        </h2>
+
+  	    <h3 id="scrobbled" v-if="user.scrobbled.name != 'Nothing!'">
+          They last scrobbled: {{user.scrobbled.name}} by {{ user.scrobbled.artist['#text'] }}
+        </h3>
 
       </div>
     </div>
@@ -62,6 +72,8 @@
 </template>
 
 <script>
+    import { EventBus } from './event-bus.js';
+
     export default {
       data() {
         return {
@@ -92,15 +104,21 @@
 
       computed: {
         songsPerHour() {
-          let registeredTime = this.userData.user.registered.unixtime;
-          let playCount = this.userData.user.playcount;
+          let songsPerHour = 0;
 
-          let delta = (((Date.now() - 1000*parseInt(registeredTime))/1000/3600)*10)/10;
+          if(this.UserData) {
+            let registeredTime = this.UserData.registered.unixtime;
+            let playCount = this.UserData.playcount;
 
-          return Math.floor(playCount / (delta));
+            let delta = (((Date.now() - 1000*parseInt(registeredTime))/1000/3600)*10)/10;
+
+            songsPerHour = Math.floor(playCount / (delta));
+          }
+
+          return songsPerHour;
         },
 
-        getUser() {
+        UserData() {
           let loaded = false;
 
           if(
@@ -113,14 +131,37 @@
           return loaded;
         },
 
+        NowPlaying() {
+          let loaded = false;
+
+          if(
+              this.user &&
+              this.user.nowPlaying) {
+            loaded = this.user.nowPlaying;
+          }
+
+          return loaded;
+        },
+
+        currentArtist() {
+          let currentArtist = '';
+
+          if(this.NowPlaying &&
+              this.NowPlaying.artist != undefined) {
+            currentArtist = this.NowPlaying.artist['#text'];
+          }
+
+          return currentArtist;
+        },
+
         userImage(size = 0) {
-          let user = this.getUser();
+          let user = this.getUserData();
 
           if(user) {
 
           }
+        },
 
-        }
       },
 
       methods: {
@@ -141,11 +182,10 @@
               this.user.nowPlaying = JSON.parse(playingInfo.track);
 
               let images = this.user.nowPlaying.image;
-              document.body.style = "padding-top: 60px; background:url('"+images[images.length -1]['#text']+"');background-attachment:fixed;background-size:cover;background-position";
+              EventBus.$emit('backgroundImageChange', images[images.length - 1]);
             }, false);
 
             this.source.addEventListener('user.lastPlayed', (e) => {
-							console.log(e.data);
               let playingInfo = JSON.parse(e.data);
               this.user.scrobbled = JSON.parse(playingInfo.track);
             }, false);
