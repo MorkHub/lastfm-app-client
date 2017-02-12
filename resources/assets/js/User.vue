@@ -29,14 +29,14 @@
   <div class="row" v-if="userData.user.name !== ''">
     <div class="well" style="background: rgba(255,255,255,.7)">
       <pre><code>{{ userData | json }}</code></pre>
-      <prev v-if="window.location.hash.indexOf('debug') != -1"><code>{{ user.nowPlaying | json }}</code></pre>
+      <pre v-if="window.location.hash.indexOf('debug') != -1"><code>{{ user.nowPlaying | json }}</code></pre>
     </div>
   </div>
 </template>
 
 <script>
     export default {
-      data: function() {
+      data() {
         return {
             user: {
               name: '',
@@ -51,7 +51,7 @@
         }
       },
 
-      ready: function() {
+      ready() {
 
       },
 
@@ -66,11 +66,11 @@
               this.source.close();
             }
 
-            this.source = new EventSource('http://barno.org:3000/lastfm/user-update-stream?username=' + username);
+            this.source = new EventSource('https://barno.org:3000/lastfm/user-update-stream?username=' + username);
             this.source.addEventListener('user.nowPlaying', (e) => {
               let playingInfo = JSON.parse(e.data);
               this.user.nowPlaying = JSON.parse(playingInfo.track);
-              document.body.style = "padding-top: 60px; background:url('"+this.user.nowPlaying.image[0]['#text']+"');background-attachment:fixed;background-size:cover;background-position";
+              document.body.style = "padding-top: 60px; background:url('"+this.user.nowPlaying.image[3]['#text']+"');background-attachment:fixed;background-size:cover;background-position";
             }, false);
 
             this.source.addEventListener('user.scrobbled', (e) => {
@@ -81,7 +81,7 @@
             // Result to xhr polling :(
           }
 
-          this.$http.get('http://barno.org:3000/lastfm', {
+          this.$http.get('https://barno.org:3000/lastfm', {
             params: {
               'user': username,
               'type': 'user.getInfo'
@@ -91,40 +91,7 @@
             this.userData = response.body;
 
           }, response => {
-            // error callback
-          });
-        }
 
-
-      }
-    }
-</script>
-            this.source.addEventListener('user.nowPlaying', (e) => {
-              let playingInfo = JSON.parse(e.data);
-              this.user.nowPlaying = playingInfo;
-            }, false);
-
-            this.source.addEventListener('user.scrobbled', (e) => {
-              let playingInfo = JSON.parse(e.data);
-
-              this.user.scrobbled = playingInfo;
-            }, false);
-          } else {
-            // Result to xhr polling :(
-          }
-
-          this.$http.get('http://192.168.1.180:3000/lastfm', {
-            params: {
-              'user': username,
-              'type': 'user.getInfo'
-            }
-          }).then(response => {
-
-            // get body data
-            this.userData = response.body;
-
-          }, response => {
-            // error callback
           });
         }
 
