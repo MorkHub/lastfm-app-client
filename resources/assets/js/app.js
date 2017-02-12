@@ -11,7 +11,9 @@ let app = new Vue({
 
   },
   methods: {
+    setBackgroundImage(url) {
 
+    }
   },
 	ready: function() {
 
