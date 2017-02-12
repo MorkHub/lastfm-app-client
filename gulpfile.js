@@ -1,7 +1,7 @@
 var elixir = require('laravel-elixir');
 
-require('laravel-elixir-vueify');
+require('laravel-elixir-vue-2');
 
 elixir(function(mix) {
-    mix.browserify('app.js');
+  mix.webpack('app.js');
 });

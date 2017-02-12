@@ -13,8 +13,10 @@
   "devDependencies": {
     "babel-preset-stage-2": "^6.22.0",
     "gulp": "^3.8.8",
-    "laravel-elixir": "^4.0.0",
-    "laravel-elixir-vueify": "^1.0.0",
+    "laravel-elixir": "^6.0.0-15",
+    "laravel-elixir-vue-2": "^0.3.0",
+    "lodash": "^4.17.4",
+    "vue": "^2.1.10",
     "vue-resource": "^1.0.3",
     "vue-spinner": "^1.0.2"
   }

@@ -23,9 +23,16 @@
     background-repeat: no-repeat;
     background-size: 100% auto;
   }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+    opacity: 0
+  }
 </style>
 
 <template>
+  <div>
   <div class="row">
     <div class="panel panel-default searchPanel">
       <div class="panel-body">
@@ -36,45 +43,49 @@
               class="form-control"
               placeholder="Username"
               v-model="user.name"
-              @keyup.enter="submit"
-              debounce="750">
+              @keyup.enter="getUser">
 
-          <scale-loader :loading="loading" :color="loadingColour" :height="height" :width="width"></scale-loader>
+          <scale-loader :loading="loading"></scale-loader>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row" v-if="UserData">
-    <div class="col-xs-12">
+  <transition name="fade">
+    <div class="row" v-if="UserData">
+      <div class="col-xs-12">
 
-      <div class="well">
+        <div class="well">
 
-        <img id="avatar" :src="UserData.image[2]['#text']">
+          <img id="avatar" :src="UserData.image[2]['#text']">
 
-        <h1 id="user"><a target="_blank" :href="UserData.url">{{UserData.name}}</a></h1>
+          <h1 id="user"><a target="_blank" :href="UserData.url">{{UserData.name}}</a></h1>
 
-        <h2 id="played">This user has played {{ UserData.playcount }} tracks!
-          <span>That's {{ songsPerHour }} per hour.</span>
-        </h2>
+          <h2 id="played">This user has played {{ UserData.playcount }} tracks!
+            <span>That's {{ songsPerHour }} per hour.</span>
+          </h2>
 
-  	    <h2 id="nowplaying" v-if="NowPlaying">
-          They are currently listening to: {{NowPlaying.name}} by {{currentArtist}}
-        </h2>
+          <h2 id="nowplaying" v-if="NowPlaying">
+            They are currently listening to: {{NowPlaying.name}} by {{currentArtist}}
+          </h2>
 
-  	    <h3 id="scrobbled" v-if="user.scrobbled.name != 'Nothing!'">
-          They last scrobbled: {{user.scrobbled.name}} by {{ user.scrobbled.artist['#text'] }}
-        </h3>
+          <h3 id="scrobbled" v-if="user.scrobbled.name != 'Nothing!'">
+            They last scrobbled: {{user.scrobbled.name}} by {{ user.scrobbled.artist['#text'] }}
+          </h3>
 
+        </div>
       </div>
     </div>
+  </transition>
   </div>
 </template>
 
 <script>
+    import Vue from 'vue';
+    import _ from 'lodash';
     import { EventBus } from './event-bus.js';
 
-    export default {
+    export default Vue.component('user', {
       data() {
         return {
           user: {
@@ -97,8 +108,7 @@
 
       watch: {
         'user.name'() {
-          this.loading = true;
-          this.submit();
+          this.getUser();
         }
       },
 
@@ -165,11 +175,12 @@
       },
 
       methods: {
-        submit() {
+        getUser: _.debounce(function() {
           let username = this.user.name;
           this.user.nowPlaying.track_name = 'Nothing!';
           this.user.scrobbled.track_name = 'Nothing!';
 
+          this.loading = true;
           if (!!window.EventSource) {
             if(this.source) {
               this.source.close();
@@ -198,7 +209,7 @@
             this.loading = false;
           });
 
-        },
+        }, 750),
 
         getUserInfo(username) {
           return this.$http.get('https://barno.org:3000/lastfm', {
@@ -208,7 +219,6 @@
             }
           });
         }
-      },
-
-    }
+      }
+    });
 </script>

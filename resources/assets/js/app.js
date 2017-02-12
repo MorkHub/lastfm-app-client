@@ -1,32 +1,46 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
 
-Vue.use(VueResource);
+  // Imports.
+  import Vue from 'vue';
+  import VueResource from 'vue-resource';
 
-import { EventBus } from './event-bus.js';
-import { ScaleLoader } from 'vue-spinner/dist/vue-spinner.min.js'
+  // Vue Includes.
+  Vue.use(VueResource);
 
-import User from './User.vue';
+  import { EventBus } from './event-bus.js';
+  import { ScaleLoader } from 'vue-spinner/dist/vue-spinner.min.js'
 
-Vue.component('ScaleLoader', ScaleLoader);
+  import AppComponent from './App.vue';
+  import User from './User.vue';
 
-let app = new Vue({
-  el: '#app',
-  data: {
+  Vue.component('ScaleLoader', ScaleLoader);
 
-  },
-  methods: {
-    setBackgroundImage(url) {
-      console.log(url['#text'])
-      document.body.style.backgroundImage = `url(${url['#text']})`;
-    }
-  },
-	ready: function() {
 
-	},
-  components: { User }
-});
+  let App = new Vue({
+    el: '#app',
+    render: function (createElement) {
+      return createElement(AppComponent)
+    },
+    data: {
 
-EventBus.$on('backgroundImageChange', (url) => {
-  app.setBackgroundImage(url);
-});
+    },
+    methods: {
+      setBackgroundImage(url) {
+        document.body.style.backgroundImage = `url(${url['#text']})`;
+      },
+      getQueryString(field, url) {
+        var href = url ? url : window.location.href;
+        var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+        var string = reg.exec(href);
+        return string ? string[1] : null;
+      }
+    },
+    ready: function() {
+      console.log(this.$route.query.test);
+    },
+    components: { user : User }
+  });
+
+  // Events
+  EventBus.$on('backgroundImageChange', (url) => {
+    App.setBackgroundImage(url);
+  });
