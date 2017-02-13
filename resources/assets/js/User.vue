@@ -34,7 +34,11 @@
   h1, h2, h3 {
     font-family: Audimat, "Arial Black";
     font-weight: 400;
-    text-align: center;
+    text-align: left;
+  }
+
+  h1#user {
+    margin-top: 0;
   }
 
   .fade-enter-active, .fade-leave-active {
