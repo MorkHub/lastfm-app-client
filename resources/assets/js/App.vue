@@ -1,8 +1,15 @@
 <style>
   .container {
-    max-width: 60%;
-    max-width: 60vw;
+    max-width: 90%;
+    max-width: 90vw;
     margin: 0 auto;
+  }
+
+  @media only screen and (max-width : 1024px) {
+    .container {
+      max-width: 100%;
+      max-width: 100vw;
+    }
   }
 </style>
 

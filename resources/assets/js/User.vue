@@ -20,7 +20,7 @@
     padding-top: 60px;
     background-attachment:fixed;
     background-repeat: no-repeat;
-    background-size: 100% auto;
+    background-size: cover;
   }
 
   .panel-body {
@@ -48,6 +48,28 @@
   .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
     opacity: 0
   }
+
+
+  @media only screen and (max-width : 1024px) {
+    #avatar {
+      margin: 1em auto;
+      display: block;
+      float: none;
+    }
+
+    h1 {
+      font-size: 2em;
+      line-height: 1.2;
+      text-align: center;
+      margin-top: 1em;
+    }
+
+    h1 + p,
+    h2, h3 {
+      margin-top: .5em;
+      font-size: 1em;
+    }
+  }
 </style>
 
 <template>
@@ -70,9 +92,9 @@
 
   <transition name="fade">
     <div class="well user-data" v-if="UserData">
-      <img id="avatar" :src="UserData.image[2]['#text']">
-
       <h1 id="user"><a target="_blank" :href="UserData.url">{{UserData.name}}</a></h1>
+
+      <img id="avatar" :src="UserData.image[2]['#text']">
 
       <h2 id="played">This user has played {{ UserData.playcount }} tracks!
         <span>That's {{ songsPerHour }} per hour.</span>
