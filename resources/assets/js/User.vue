@@ -32,7 +32,7 @@
   }
 
   h1, h2, h3 {
-    font-family: Audimat, serif;
+    font-family: Audimat, "Arial Black";
     font-weight: 400;
     text-align: center;
   }
