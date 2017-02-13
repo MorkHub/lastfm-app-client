@@ -27,16 +27,8 @@
       setBackgroundImage(url) {
         document.body.style.backgroundImage = `url(${url['#text']})`;
       },
-      getQueryString(field, url) {
-        var href = url ? url : window.location.href;
-        var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
-        var string = reg.exec(href);
-        return string ? string[1] : null;
-      }
     },
-    ready: function() {
-      console.log(this.$route.query.test);
-    },
+
     components: { user : User }
   });
 

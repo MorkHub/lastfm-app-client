@@ -1,5 +1,5 @@
 {
-  "name": "LastFM App",
+  "name": "LastFM-Client",
   "version": "0.1.0",
   "description": "Does various things related to LastFM and relevant integrations.",
   "scripts": {
@@ -15,6 +15,7 @@
     "gulp": "^3.8.8",
     "laravel-elixir": "^6.0.0-15",
     "laravel-elixir-vue-2": "^0.3.0",
+    "laravel-elixir-webpack-official": "^1.0.10",
     "lodash": "^4.17.4",
     "vue": "^2.1.10",
     "vue-resource": "^1.0.3",

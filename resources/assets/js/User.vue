@@ -86,10 +86,12 @@
     import { EventBus } from './event-bus.js';
 
     export default Vue.component('user', {
+      props: ['username'],
       data() {
+        console.log(this.username);
         return {
           user: {
-            name: '',
+            name: this.username,
             nowPlaying: {
               track_name: 'Nothing!'
             },
@@ -102,8 +104,8 @@
         }
       },
 
-      ready() {
-
+      mounted() {
+        this.getUser();
       },
 
       watch: {
