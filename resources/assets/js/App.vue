@@ -1,3 +1,11 @@
+<style>
+  .container {
+    max-width: 60%;
+    max-width: 60vw;
+    margin: 0 auto;
+  }
+</style>
+
 <template>
   <div class="container">
     <div class="section">

@@ -5,7 +5,6 @@
   }
 
   .searchPanel input {
-    margin: 1em;
     padding: 1em;
     text-align: center;
   }
@@ -23,9 +22,25 @@
     background-repeat: no-repeat;
     background-size: 100% auto;
   }
+
+  .panel-body {
+    padding: 1em;
+  }
+
+  .user-data {
+    padding: 1em;
+  }
+
+  h1, h2, h3 {
+    font-family: Audimat, serif;
+    font-weight: 400;
+    text-align: center;
+  }
+
   .fade-enter-active, .fade-leave-active {
     transition: opacity .5s
   }
+
   .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
     opacity: 0
   }
@@ -36,45 +51,36 @@
   <div class="row">
     <div class="panel panel-default searchPanel">
       <div class="panel-body">
-        <div class="col-sm-8 col-md-7 col-md-offset-2">
-          <input
-              id="getUsername"
-              type="text"
-              class="form-control"
-              placeholder="Username"
-              v-model="user.name"
-              @keyup.enter="getUser">
+        <input
+            id="getUsername"
+            type="text"
+            class="form-control"
+            placeholder="Username"
+            v-model="user.name"
+            @keyup.enter="getUser">
 
-          <scale-loader :loading="loading"></scale-loader>
-        </div>
+        <scale-loader :loading="loading"></scale-loader>
       </div>
     </div>
   </div>
 
   <transition name="fade">
-    <div class="row" v-if="UserData">
-      <div class="col-xs-12">
+    <div class="well user-data" v-if="UserData">
+      <img id="avatar" :src="UserData.image[2]['#text']">
 
-        <div class="well">
+      <h1 id="user"><a target="_blank" :href="UserData.url">{{UserData.name}}</a></h1>
 
-          <img id="avatar" :src="UserData.image[2]['#text']">
+      <h2 id="played">This user has played {{ UserData.playcount }} tracks!
+        <span>That's {{ songsPerHour }} per hour.</span>
+      </h2>
 
-          <h1 id="user"><a target="_blank" :href="UserData.url">{{UserData.name}}</a></h1>
+      <h2 id="nowplaying" v-if="NowPlaying">
+        They are currently listening to: {{NowPlaying.name}} by {{currentArtist}}
+      </h2>
 
-          <h2 id="played">This user has played {{ UserData.playcount }} tracks!
-            <span>That's {{ songsPerHour }} per hour.</span>
-          </h2>
-
-          <h2 id="nowplaying" v-if="NowPlaying">
-            They are currently listening to: {{NowPlaying.name}} by {{currentArtist}}
-          </h2>
-
-          <h3 id="scrobbled" v-if="user.scrobbled.name != 'Nothing!'">
-            They last scrobbled: {{user.scrobbled.name}} by {{ user.scrobbled.artist['#text'] }}
-          </h3>
-
-        </div>
-      </div>
+      <h3 id="scrobbled" v-if="user.scrobbled.name != 'Nothing!'">
+        They last scrobbled: {{user.scrobbled.name}} by {{ user.scrobbled.artist['#text'] }}
+      </h3>
     </div>
   </transition>
   </div>
